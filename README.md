@@ -30,7 +30,6 @@ pip install -r requirements.txt
 ```
 python manage.py csu
 ```
-
 5. Создайте базу данных и выполните миграции:
 ```
 python manage.py migrate
