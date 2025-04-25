@@ -26,7 +26,7 @@ INSTALLED_APPS = [
     "drf_yasg",
     "rest_framework_simplejwt",
     "django_celery_beat",
-
+    "corsheaders",
     "users",
     "habits",
 ]
@@ -62,7 +62,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
-
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
@@ -74,12 +73,10 @@ DATABASES = {
     }
 }
 
-
 if 'test' in sys.argv or 'test/_coverage' in sys.argv:
     # Covers regular testing and django-coverage
     DATABASES['default']['ENGINE'] = 'django.db.backends.sqlite3'
     DATABASES['default']['NAME'] = ':memory:'
-
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
@@ -128,12 +125,10 @@ SIMPLE_JWT = {
     "UPDATE_LAST_LOGIN": True,
 }
 
-
 CORS_ALLOWED_ORIGINS = [
     "https://127.0.0.1:8000",
 ]
 CORS_ALLOW_ALL_ORIGINS = False
-
 
 CELERY_TIMEZONE = TIME_ZONE
 CELERY_TASK_TRACK_STARTED = True
