@@ -75,14 +75,19 @@ jobs:
           touch .env
           echo '"${{ secrets.SECRET_KEY }}"' | sed "s/\"//g" > .env
 
-      - name: Build Docker image
-        run: docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/habits:${{ github.sha }} .
-
       - name: Log in to Docker Hub
         run: echo ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }} | docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} --password-stdin
 
-      - name: Push Docker image to Docker Hub
-        run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/habits:${{ github.sha }}
+      - name: Build and Push Docker images with Docker Compose
+        run: |
+            docker-compose build -t ${{ secrets.DOCKER_HUB_USERNAME }}/habits:${{ github.sha }} .
+            docker-compose push ${{ secrets.DOCKER_HUB_USERNAME }}/habits:${{ github.sha }}
+
+#      - name: Build Docker image
+#        run: docker build
+#
+#      - name: Push Docker image to Docker Hub
+#        run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/habits:${{ github.sha }}
 
   deploy:
     needs: build
@@ -103,12 +108,13 @@ jobs:
 
       - name: Deploy to Server
         run: |
-          scp -o StrictHostKeyChecking=no docker-compose.prod.yml .env ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}:/var/www/habit-tracker/
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} "
-            cd /var/www/habit-tracker && \
-            docker system prune -af && \
-            docker volume prune -f && \
-            docker-compose -f docker-compose.prod.yml down --remove-orphans && \
-            docker-compose -f docker-compose.prod.yml pull && \
-            docker-compose -f docker-compose.prod.yml up -d --build --force-recreate
+          sshpass -p "${{ secrets.SSH_KEY }}" ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} 
+#               "cd /home/elena/ && git pull && docker compose down --remove-orphans && docker compose up -d --build"
+#          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
+
+          docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/habits:${{ github.sha }}
+          docker stop habits || true
+          docker rm habits || true
+          docker compose up -d --build --name habits -p 80:8000 ${{ secrets.DOCKER_HUB_USERNAME }}/habits:${{ github.sha }}
+#          docker-compose run -d --name habits -p 80:8000 ${{ secrets.DOCKER_HUB_USERNAME }}/habits:${{ github.sha }}
           EOF
