@@ -83,6 +83,12 @@ jobs:
             docker-compose build -t ${{ secrets.DOCKER_HUB_USERNAME }}/habits:${{ github.sha }} .
             docker-compose push ${{ secrets.DOCKER_HUB_USERNAME }}/habits:${{ github.sha }}
 
+#      - name: Build Docker image
+#        run: docker build
+#
+#      - name: Push Docker image to Docker Hub
+#        run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/habits:${{ github.sha }}
+
   deploy:
     needs: build
     runs-on: ubuntu-latest
@@ -93,6 +99,7 @@ jobs:
       SSH_USER: ${{ secrets.SSH_USER }}
       SERVER_IP: ${{ secrets.SERVER_IP }}
       SECRET_KEY: ${{ secrets.SECRET_KEY }}
+
     steps:
       - name: Set up SSH
         uses: webfactory/ssh-agent@v0.9.0
@@ -102,8 +109,8 @@ jobs:
       - name: Deploy to Server
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
-          docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/materials:${{ github.sha }}
-          docker stop materials || true
-          docker rm materials || true
-          docker run -d --name materials -p 80:8000 ${{ secrets.DOCKER_HUB_USERNAME }}/materials:${{ github.sha }} 
+          docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/habits:${{ github.sha }}
+          docker-compose down habits || true
+          docker-compose pull habits || true
+          docker-compose up -d --build --name habits -p 80:8000 ${{ secrets.DOCKER_HUB_USERNAME }}/habits:${{ github.sha }} 
           EOF
