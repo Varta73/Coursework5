@@ -80,7 +80,7 @@ jobs:
 
       - name: Build and Push Docker images with Docker Compose
         run: |
-            docker-compose build -t ${{ secrets.DOCKER_HUB_USERNAME }}/habits:${{ github.sha }} .
+            docker-compose build -t 
             docker-compose push ${{ secrets.DOCKER_HUB_USERNAME }}/habits:${{ github.sha }}
 
 #      - name: Build Docker image
