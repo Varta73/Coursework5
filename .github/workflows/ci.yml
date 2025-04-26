@@ -105,7 +105,6 @@ jobs:
         uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.SSH_KEY }}
-
       - name: Deploy to Server
         run: |
           sshpass -p "${{ secrets.SSH_KEY }}" ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} 
