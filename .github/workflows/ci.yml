@@ -101,7 +101,6 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_KEY }}
 
-
       - name: Deploy to Server
         run: |
           ssh -t -t -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} -o ServerAliveInterval=60 << 'EOF'
