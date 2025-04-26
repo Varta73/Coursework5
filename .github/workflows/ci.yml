@@ -83,11 +83,6 @@ jobs:
             docker-compose build -t ${{ secrets.DOCKER_HUB_USERNAME }}/habits:${{ github.sha }} .
             docker-compose push ${{ secrets.DOCKER_HUB_USERNAME }}/habits:${{ github.sha }}
 
-#      - name: Build Docker image
-#        run: docker build
-#
-#      - name: Push Docker image to Docker Hub
-#        run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/habits:${{ github.sha }}
   deploy:
     needs: build
     runs-on: ubuntu-latest
