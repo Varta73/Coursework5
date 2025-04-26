@@ -102,9 +102,8 @@ jobs:
       - name: Deploy to Server
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
-          docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/habits:${{ github.sha }}
-          docker stop habits || true
-          docker rm habits || true
-          docker compose up -d --build --name habits -p 80:8000 ${{ secrets.DOCKER_HUB_USERNAME }}/habits:${{ github.sha }}
-#          docker-compose run -d --name habits -p 80:8000 ${{ secrets.DOCKER_HUB_USERNAME }}/habits:${{ github.sha }}
+          docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/materials:${{ github.sha }}
+          docker stop materials || true
+          docker rm materials || true
+          docker run -d --name materials -p 80:8000 ${{ secrets.DOCKER_HUB_USERNAME }}/materials:${{ github.sha }} 
           EOF
