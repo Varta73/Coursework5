@@ -108,5 +108,5 @@ jobs:
           docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/habits:${{ github.sha }}
           docker stop habits || true
           docker rm habits || true
-          docker run -d --name habits -p 80:8000 ${{ secrets.DOCKER_HUB_USERNAME }}/habits:${{ github.sha }} 
+          docker run -d --name habits -p 80:8000 ${{ secrets.DOCKER_HUB_USERNAME }}/habits:${{ github.sha }} -e SECRET_KEY=$SECRET_KEY
           EOF
