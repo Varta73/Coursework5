@@ -105,7 +105,7 @@ jobs:
           ssh-private-key: ${{ secrets.SSH_KEY }}
       - name: Deploy to Server
         run: |
-          sshpass -p "${{ secrets.SSH_KEY }}" ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}
           docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/habits:${{ github.sha }}
           docker stop habits || true
           docker rm habits || true
