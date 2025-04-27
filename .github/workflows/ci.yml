@@ -79,6 +79,7 @@ jobs:
           SECRET_KEY=${{ secrets.SECRET_KEY }}
           DOCKER_HUB_USERNAME=${{ secrets.DOCKER_HUB_USERNAME }}
           DOCKER_HUB_ACCESS_TOKEN=${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          DEPLOY_DIR=${{ secrets.DEPLOY_DIR }}
           EOF
 
       - name: Set up Docker Compose
@@ -115,6 +116,12 @@ jobs:
       
             mkdir -p habits
             cd habits || exit 1
+          
+            if [ ! -d ".git" ]; then
+              git clone https://github.com/${{ secrets.DEPLOY_DIR }}.git . || exit 1
+              else
+                git pull || exit 1
+              fi
       
             echo "Скачиваю обновления образов..."
             docker-compose -f ./docker-compose.yml pull
