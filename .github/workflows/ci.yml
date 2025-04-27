@@ -136,10 +136,10 @@ jobs:
             docker-compose -f ./docker-compose.yaml pull
       
             echo "Останавливаю старые контейнеры..."
-            docker-compose -f ./docker/docker-compose.yaml down
+            docker-compose -f ./docker-compose.yaml down
       
             echo "Поднимаю новые контейнеры..."
-            docker-compose -f ./docker/docker-compose.yaml up -d --build
+            docker-compose -f ./docker-compose.yaml up -d --build
           EOF
 
       - name: Check running containers
