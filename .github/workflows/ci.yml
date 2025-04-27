@@ -72,11 +72,14 @@ jobs:
 
       - name: Create .env file
         run: |
-          echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" > .env
-          echo "SSH_USER=${{ secrets.SSH_USER }}" > .env
-          echo "SERVER_IP=${{ secrets.SERVER_IP }}" > .env
-          echo "DOCKER_HUB_USERNAME=${{ secrets.DOCKER_HUB_USERNAME }}" > .env
-          echo "DOCKER_HUB_ACCESS_TOKEN=${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}" > .env
+          cat <<EOF > .env
+          DEBUG=False
+          SSH_USER=${{ secrets.SSH_USER }}
+          SERVER_IP=${{ secrets.SERVER_IP }}
+          SECRET_KEY=${{ secrets.SECRET_KEY }}
+          DOCKER_HUB_USERNAME=${{ secrets.DOCKER_HUB_USERNAME }}
+          DOCKER_HUB_ACCESS_TOKEN=${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          EOF
 
       - name: Set up Docker Compose
         run: |
