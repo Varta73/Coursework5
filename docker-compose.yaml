@@ -25,7 +25,7 @@ services:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
       - static_volume:/habits/staticfiles
     depends_on:
-      - web
+      - habits
 
   db:
     image: postgres:17-alpine
