@@ -122,7 +122,7 @@ jobs:
 
       - name: Upload .env to server
         run: |
-          rsync -avz .env ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}:${{ secrets.DEPLOY_DIR }}/.env
+          rsync -avz .env ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}:habits/.env
 
       - name: Install Docker and Docker Compose on server (if not installed)
         run: |
@@ -161,7 +161,7 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
             set -e
-            cd ${{ secrets.DEPLOY_DIR }}
+            cd habits
             echo "Stopping containers..."
             docker-compose down || { echo "docker-compose down failed"; exit 1; }
             
@@ -178,7 +178,7 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
             set -e
-            cd ${{ secrets.DEPLOY_DIR }}
+            cd habits
             echo "Running database migrations..."
             docker-compose exec backend python manage.py migrate || { echo "Migrations failed"; exit 1; }
           EOF
