@@ -118,11 +118,11 @@ jobs:
       - name: Deploy to Server
         run: |
             ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << EOF
-              ssh -l test -p22 51.250.41.177 << EOF2
-                docker-compose down
-                docker-compose pull
-                docker-compose push ${{ secrets.DOCKER_HUB_USERNAME }}/habits:${{ github.sha }}
-                docker-compose up -d --build
+            ssh -l test -p22 51.250.41.177 << EOF2
+            docker-compose down
+            docker-compose pull
+            docker-compose push ${{ secrets.DOCKER_HUB_USERNAME }}/habits:${{ github.sha }}
+            docker-compose up -d --build
 #                docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/habits:${{ github.sha }}
 #                docker stop habits || true
 #                docker rm habits || true
