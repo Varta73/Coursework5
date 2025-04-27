@@ -1,7 +1,7 @@
 # Используем официальный образ Nginx
 FROM nginx:latest
 
-RUN mkdir -p /app/staticfiles
+RUN mkdir -p /habits/staticfiles
 
 COPY nginx.conf /etc/nginx/nginx.conf
 
