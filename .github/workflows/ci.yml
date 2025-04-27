@@ -123,7 +123,7 @@ jobs:
           docker-compose down || { echo "docker-compose down failed"; exit 1; }
           docker-compose pull || { echo "docker-compose pull failed"; exit 1; }
           docker-compose push ${{ secrets.DOCKER_HUB_USERNAME }}/habits:${{ github.sha }}
-          docker-compose up || { echo "docker-compose up failed"; exit 1; }
+          docker-compose up -d --build ${{ secrets.DOCKER_HUB_USERNAME }}/habits:${{ github.sha }}|| { echo "docker-compose up failed"; exit 1; }
           EOF2
           EOF
 
