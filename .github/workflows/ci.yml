@@ -97,14 +97,14 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
-    env:
-      SSH_KEY: ${{ secrets.SSH_KEY }}
-      DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
-      DOCKER_HUB_ACCESS_TOKEN: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
-      SSH_USER: ${{ secrets.SSH_USER }}
-      SERVER_IP: ${{ secrets.SERVER_IP }}
-      SECRET_KEY: ${{ secrets.SECRET_KEY }}
-      DEPLOY_DIR: ${{ secrets.DEPLOY_DIR }}
+#    env:
+#      SSH_KEY: ${{ secrets.SSH_KEY }}
+#      DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+#      DOCKER_HUB_ACCESS_TOKEN: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+#      SSH_USER: ${{ secrets.SSH_USER }}
+#      SERVER_IP: ${{ secrets.SERVER_IP }}
+#      SECRET_KEY: ${{ secrets.SECRET_KEY }}
+#      DEPLOY_DIR: ${{ secrets.DEPLOY_DIR }}
 
     steps:
       - name: Set up SSH
@@ -114,6 +114,17 @@ jobs:
       - name: Add server to known_hosts
         run: |
             ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
+
+      - name: Generate .env file
+        run: |
+          echo "SSH_KEY: ${{ secrets.SSH_KEY }}" > .env
+          echo "DEBUG=False" >> .env
+          echo "SSH_USER: ${{ secrets.SSH_USER }}" >> .env
+          echo "SERVER_IP: ${{ secrets.SERVER_IP }}" >> .env
+          echo "SECRET_KEY: ${{ secrets.SECRET_KEY }}" >> .env
+          echo "DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}" >> .env
+          echo "DOCKER_HUB_ACCESS_TOKEN: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}" >> .env
+          cat .env
           
       - name: Copy project files to server
         run: |
