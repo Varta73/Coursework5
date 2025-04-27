@@ -111,7 +111,8 @@ jobs:
             -o StrictHostKeyChecking=no \
             -o UserKnownHostsFile=/dev/null \
             ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
-            cd ${{ secrets.DEPLOY_DIR }} || exit 1
+            mkdir -p habits
+            cd habits || exit 1
             docker-compose down || exit 1
             docker-compose pull ${{ secrets.DOCKER_HUB_USERNAME }}/habits:${{ github.sha }} || exit 1
             docker-compose up -d --build || exit 1
