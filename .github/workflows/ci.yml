@@ -115,25 +115,25 @@ jobs:
         run: |
             ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
 
-#      - name: Generate .env file
-#        run: |
-#          echo "SSH_KEY: ${{ secrets.SSH_KEY }}" > .env
-#          echo "DEBUG=False" >> .env
-#          echo "SSH_USER: ${{ secrets.SSH_USER }}" >> .env
-#          echo "SERVER_IP: ${{ secrets.SERVER_IP }}" >> .env
-#          echo "SECRET_KEY: django-insecure-#b7%9!4l5$49-^05xk8bjtuvew1&yphe7wl&9dwl8_gwdfe70+" >> .env
-#          echo "DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}" >> .env
-#          echo "DOCKER_HUB_ACCESS_TOKEN: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}" >> .env
-#          cat .env
+      - name: Generate .env file
+        run: |
+          echo "SSH_KEY: ${{ secrets.SSH_KEY }}" > .env
+          echo "DEBUG=False" >> .env
+          echo "SSH_USER: ${{ secrets.SSH_USER }}" >> .env
+          echo "SERVER_IP: ${{ secrets.SERVER_IP }}" >> .env
+          echo "SECRET_KEY: django-insecure-#b7%9!4l5$49-^05xk8bjtuvew1&yphe7wl&9dwl8_gwdfe70+" >> .env
+          echo "DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}" >> .env
+          echo "DOCKER_HUB_ACCESS_TOKEN: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}" >> .env
+          cat .env
           
       - name: Copy project files to server
         run: |
           rsync -avz --exclude '__pycache__' --exclude 'venv' --exclude '.git' . \
             ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}:habits
 
-#      - name: Upload .env to server
-#        run: |
-#          rsync -avz .env ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}:habits/.env
+      - name: Upload .env to server
+        run: |
+          rsync -avz .env ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}:habits/.env
 
       - name: Install Docker and Docker Compose on server (if not installed)
         run: |
@@ -161,7 +161,7 @@ jobs:
 #        run: |
 #          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
 #            set -e
-#            until curl -S ssh -l ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}; do
+#            until curl -S http:// ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}; do
 #              echo "Waiting for backend to be ready..."
 #              sleep 5
 #            done
@@ -174,6 +174,7 @@ jobs:
             set -e
             cd habits
             echo "Stopping containers..."
+            docker-compose run -e SECRET_KEY='django-insecure-#b7%9!4l5$49-^05xk8bjtuvew1&yphe7wl&9dwl8_gwdfe70+' web
             docker-compose down || { echo "docker-compose down failed"; exit 1; }
             
             echo "Pulling latest images..."
