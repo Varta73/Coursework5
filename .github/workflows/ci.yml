@@ -109,12 +109,21 @@ jobs:
             -F /dev/null \
             -o StrictHostKeyChecking=no \
             -o UserKnownHostsFile=/dev/null \
-            ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
+            ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << EOF
+            set -e  # Остановить скрипт при любой ошибке
+      
             mkdir -p habits
             cd habits || exit 1
-            docker-compose down || exit 1
-            docker-compose pull ${{ secrets.DOCKER_HUB_USERNAME }}/habits:${{ github.sha }} || exit 1
-            docker-compose -f ./docker/docker-compose.yml up -d --build || exit 1
+      
+            echo "Скачиваю обновления образов..."
+            docker-compose -f ./docker/docker-compose.yml pull
+      
+            echo "Останавливаю старые контейнеры..."
+            docker-compose -f ./docker/docker-compose.yml down
+      
+            echo "Поднимаю новые контейнеры..."
+            docker-compose -f ./docker/docker-compose.yml up -d --build
+
           EOF
 
       - name: Check running containers
