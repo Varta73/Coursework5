@@ -119,9 +119,9 @@ jobs:
           
             if [ ! -d ".git" ]; then
               git clone https://github.com/${{ secrets.DEPLOY_DIR }}.git . || exit 1
-              else
-                git pull || exit 1
-              fi
+            else
+              git pull || exit 1
+            fi
       
             echo "Скачиваю обновления образов..."
             docker-compose -f ./docker-compose.yml pull
