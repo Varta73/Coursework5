@@ -160,6 +160,7 @@ jobs:
             echo "Деплой завершен успешно!"
           EOF
 
+
       - name: Check running containers
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} "docker ps"
