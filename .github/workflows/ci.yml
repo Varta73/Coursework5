@@ -116,7 +116,7 @@ jobs:
             cd habits || exit 1
       
             echo "Скачиваю обновления образов..."
-            docker-compose -f ./docker/docker-compose.yml pull
+            docker-compose -f ./docker-compose.yml pull
       
             echo "Останавливаю старые контейнеры..."
             docker-compose -f ./docker/docker-compose.yml down
