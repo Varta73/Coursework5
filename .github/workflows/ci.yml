@@ -65,7 +65,6 @@ jobs:
       DATABASE_USER: ${{ secrets.DATABASE_USER }}
       DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
 
-
     steps:
       - name: Check out code
         uses: actions/checkout@v3
