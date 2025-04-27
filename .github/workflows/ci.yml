@@ -117,33 +117,30 @@ jobs:
             ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
 
       - name: Deploy to Server
-#        run: |
-#          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
-##          docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/materials:${{ github.sha }}
-#          cd ${{ secrets.DEPLOY_DIR }}
-##          docker stop materials || true
-#          git pull
-#          docker-compose pull
-##          docker rm materials || true
-#          docker-compose down
-##          docker run -d --name materials -p 80:8000 ${{ secrets.DOCKER_HUB_USERNAME }}/materials:${{ github.sha }}
-#          docker-compose up -d --build
-#          EOF
-
-      - name: Deploy to Server
         run: |
-            ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << EOF
-              ssh -l test -p22 51.250.41.177 << EOF2
-              docker-compose down
-              docker-compose pull
-              docker-compose push ${{ secrets.DOCKER_HUB_USERNAME }}/habits:${{ github.sha }}
-              docker-compose up -d --build
-#                docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/habits:${{ github.sha }}
-#                docker stop habits || true
-#                docker rm habits || true
-#                docker run -d --name habits -p 80:8000 ${{ secrets.DOCKER_HUB_USERNAME }}/habits:${{ github.sha }}
-              EOF2
-            EOF
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
+          ssh -l test -p22 51.250.41.177 << EOF2
+          docker-compose down || { echo "docker-compose down failed"; exit 1; }
+          docker-compose pull || { echo "docker-compose pull failed"; exit 1; }
+          docker-compose push ${{ secrets.DOCKER_HUB_USERNAME }}/habits:${{ github.sha }}
+          docker-compose up -d --build || { echo "docker-compose up failed"; exit 1; }
+          EOF2
+          EOF
+
+#      - name: Deploy to Server
+#        run: |
+#            ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << EOF
+#              ssh -l test -p22 51.250.41.177 << EOF2
+#              docker-compose down
+#              docker-compose pull
+#              docker-compose push ${{ secrets.DOCKER_HUB_USERNAME }}/habits:${{ github.sha }}
+#              docker-compose up -d --build
+##                docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/habits:${{ github.sha }}
+##                docker stop habits || true
+##                docker rm habits || true
+##                docker run -d --name habits -p 80:8000 ${{ secrets.DOCKER_HUB_USERNAME }}/habits:${{ github.sha }}
+#              EOF2
+#            EOF
 
       - name: Check running containers
         run: |
