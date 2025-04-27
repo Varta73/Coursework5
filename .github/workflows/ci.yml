@@ -115,6 +115,21 @@ jobs:
       - name: Add server to known_hosts
         run: |
             ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
+
+      - name: Deploy to Server
+#        run: |
+#          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
+##          docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/materials:${{ github.sha }}
+#          cd ${{ secrets.DEPLOY_DIR }}
+##          docker stop materials || true
+#          git pull
+#          docker-compose pull
+##          docker rm materials || true
+#          docker-compose down
+##          docker run -d --name materials -p 80:8000 ${{ secrets.DOCKER_HUB_USERNAME }}/materials:${{ github.sha }}
+#          docker-compose up -d --build
+#          EOF
+
       - name: Deploy to Server
         run: |
             ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << EOF
