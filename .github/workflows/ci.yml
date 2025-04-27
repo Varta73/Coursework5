@@ -65,6 +65,7 @@ jobs:
       DATABASE_USER: ${{ secrets.DATABASE_USER }}
       DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
 
+
     steps:
       - name: Check out code
         uses: actions/checkout@v3
@@ -108,8 +109,8 @@ jobs:
     steps:
       - name: Set up SSH
         uses: webfactory/ssh-agent@v0.9.0
-#        with:
-#          ssh-private-key: ${{ secrets.SSH_KEY }}
+        with:
+          ssh-private-key: ${{ secrets.SSH_KEY }}
       - name: Deploy to Server
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
@@ -117,11 +118,11 @@ jobs:
           cd ${{ secrets.DEPLOY_DIR }}
 #          docker stop materials || true
           git pull
-          sudo docker-compose pull
+          docker-compose pull
 #          docker rm materials || true
-          sudo docker-compose down
+          docker-compose down
 #          docker run -d --name materials -p 80:8000 ${{ secrets.DOCKER_HUB_USERNAME }}/materials:${{ github.sha }} 
-          sudo docker-compose up -d --build
+          docker-compose up -d --build
           EOF
 
 #      - name: Deploy to Server
