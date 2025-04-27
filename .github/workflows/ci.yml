@@ -104,6 +104,7 @@ jobs:
       SSH_USER: ${{ secrets.SSH_USER }}
       SERVER_IP: ${{ secrets.SERVER_IP }}
       SECRET_KEY: ${{ secrets.SECRET_KEY }}
+      DEPLOY_DIR: ${{ secrets.DEPLOY_DIR }}
 
     steps:
       - name: Set up SSH
@@ -113,10 +114,15 @@ jobs:
       - name: Deploy to Server
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
-          docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/materials:${{ github.sha }}
-          docker stop materials || true
-          docker rm materials || true
-          docker run -d --name materials -p 80:8000 ${{ secrets.DOCKER_HUB_USERNAME }}/materials:${{ github.sha }} 
+#          docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/materials:${{ github.sha }}
+          cd ${{ secrets.DEPLOY_DIR }}
+#          docker stop materials || true
+          git pull
+          sudo docker-compose pull
+#          docker rm materials || true
+          sudo docker-compose down
+#          docker run -d --name materials -p 80:8000 ${{ secrets.DOCKER_HUB_USERNAME }}/materials:${{ github.sha }} 
+          sudo docker-compose up -d --build
           EOF
 
 #      - name: Deploy to Server
