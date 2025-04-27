@@ -93,12 +93,10 @@ jobs:
     runs-on: ubuntu-latest
     env:
       SSH_KEY: ${{ secrets.SSH_KEY }}
-      DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
-      DOCKER_HUB_ACCESS_TOKEN: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
       SSH_USER: ${{ secrets.SSH_USER }}
       SERVER_IP: ${{ secrets.SERVER_IP }}
-      SECRET_KEY: ${{ secrets.SECRET_KEY }}
-
+      DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+      DOCKER_HUB_ACCESS_TOKEN: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
     steps:
       - name: Set up SSH
         uses: webfactory/ssh-agent@v0.9.0
@@ -107,13 +105,14 @@ jobs:
 
       - name: Deploy to Server
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
-          ssh -l test ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << EOF2
-          docker-compose down || { echo "docker-compose down failed"; exit 1; }
-          docker-compose pull ${{ secrets.DOCKER_HUB_USERNAME }}/habits:${{ github.sha }}|| { echo "docker-compose pull failed"; exit 1; }
-          docker-compose push ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}
-          docker-compose up -d --build ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}|| { echo "docker-compose up failed"; exit 1; }
-          EOF2
+          ssh \
+            -F /dev/null \
+            -o StrictHostKeyChecking=no \
+            -o UserKnownHostsFile=/dev/null \
+            ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
+            docker-compose down || exit 1
+            docker-compose pull ${{ secrets.DOCKER_HUB_USERNAME }}/habits:${{ github.sha }} || exit 1
+            docker-compose up -d --build || exit 1
           EOF
 
       - name: Check running containers
