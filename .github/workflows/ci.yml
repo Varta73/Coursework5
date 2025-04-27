@@ -180,6 +180,7 @@ jobs:
             echo "Rebuilding and restarting containers..."
             docker-compose up -d --build || { echo "docker-compose up failed"; exit 1; }
             
+            
             echo "Docker Compose successfully restarted."
           EOF
 
