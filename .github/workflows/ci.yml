@@ -157,16 +157,16 @@ jobs:
             fi
           EOF
 
-      - name: Wait for backend container to be ready
-        run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
-            set -e
-            until curl -S ssh -l ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}; do
-              echo "Waiting for backend to be ready..."
-              sleep 5
-            done
-            echo "Backend is ready."
-          EOF
+#      - name: Wait for backend container to be ready
+#        run: |
+#          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
+#            set -e
+#            until curl -S ssh -l ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}; do
+#              echo "Waiting for backend to be ready..."
+#              sleep 5
+#            done
+#            echo "Backend is ready."
+#          EOF
 
       - name: Restart docker-compose on server
         run: |
