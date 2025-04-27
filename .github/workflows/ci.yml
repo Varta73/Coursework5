@@ -118,7 +118,7 @@ jobs:
       - name: Copy project files to server
         run: |
           rsync -avz --exclude '__pycache__' --exclude 'venv' --exclude '.git' . \
-            ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}:${{ secrets.DEPLOY_DIR }}
+            ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}:habits
 
       - name: Upload .env to server
         run: |
