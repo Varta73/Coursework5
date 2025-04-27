@@ -174,7 +174,7 @@ jobs:
             set -e
             cd habits
 #            echo "Stopping containers..."
-#            docker-compose down || { echo "docker-compose down failed"; exit 1; }
+            docker-compose down || { echo "docker-compose down failed"; exit 1; }
             
             echo "Pulling latest images..."
             docker-compose pull || { echo "docker-compose pull failed"; exit 1; }
