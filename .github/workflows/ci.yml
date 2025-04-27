@@ -112,19 +112,20 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_KEY }}
 
-      - name: Add server to known_hosts
+      - name: Copy project files to server
         run: |
-            ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
+            rsync -avz --exclude '__pycache__' --exclude 'venv' --exclude '.git' . \
+              ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}:habits
 
       - name: Deploy to Server
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
-#          ssh -l test -p22 51.250.41.177 << EOF2
+          ssh -l test -p22 51.250.41.177 << EOF2
           docker-compose down || { echo "docker-compose down failed"; exit 1; }
           docker-compose pull || { echo "docker-compose pull failed"; exit 1; }
           docker-compose push ${{ secrets.DOCKER_HUB_USERNAME }}/habits:${{ github.sha }}
           docker-compose up -d --build || { echo "docker-compose up failed"; exit 1; }
-#          EOF2
+          EOF2
           EOF
 
 #      - name: Deploy to Server
