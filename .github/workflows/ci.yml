@@ -80,6 +80,9 @@ jobs:
           DOCKER_HUB_USERNAME=${{ secrets.DOCKER_HUB_USERNAME }}
           DOCKER_HUB_ACCESS_TOKEN=${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
           DEPLOY_DIR=${{ secrets.DEPLOY_DIR }}
+          POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_DB=${{ secrets.POSTGRES_DB }}
+          POSTGRES_USER=${{ secrets.POSTGRES_USER }}
           EOF
 
       - name: Set up Docker Compose
@@ -141,6 +144,9 @@ jobs:
             echo "DOCKER_HUB_USERNAME=${{ secrets.DOCKER_HUB_USERNAME }}" >> .env
             echo "DOCKER_HUB_ACCESS_TOKEN=${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}" >> .env
             echo "DEPLOY_DIR=${{ secrets.DEPLOY_DIR }}" >> .env
+            echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> .env
+            echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" >> .env
+            echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> .env
       
             echo "Скачиваю обновления образов..."
             docker-compose -f ./docker-compose.yaml pull
