@@ -115,7 +115,7 @@ jobs:
             cd habits || exit 1
             docker-compose down || exit 1
             docker-compose pull ${{ secrets.DOCKER_HUB_USERNAME }}/habits:${{ github.sha }} || exit 1
-            docker-compose up -d --build || exit 1
+            docker-compose -f ./docker/docker-compose.yml up -d --build || exit 1
           EOF
 
       - name: Check running containers
