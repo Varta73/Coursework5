@@ -157,7 +157,6 @@ jobs:
             fi
           EOF
 
-
 #      - name: Wait for backend container to be ready
 #        run: |
 #          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
