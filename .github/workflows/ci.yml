@@ -88,12 +88,6 @@ jobs:
             docker-compose build
             docker-compose push
 
-#      - name: Build Docker image
-#        run: docker build
-#
-#      - name: Push Docker image to Docker Hub
-#        run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/habits:${{ github.sha }}
-
   deploy:
     needs: build
     runs-on: ubuntu-latest
@@ -104,7 +98,6 @@ jobs:
       SSH_USER: ${{ secrets.SSH_USER }}
       SERVER_IP: ${{ secrets.SERVER_IP }}
       SECRET_KEY: ${{ secrets.SECRET_KEY }}
-      DEPLOY_DIR: ${{ secrets.DEPLOY_DIR }}
 
     steps:
       - name: Set up SSH
@@ -112,153 +105,17 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_KEY }}
 
-#      - name: Add server to known_hosts
-#        run: |
-#            ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
-
       - name: Deploy to Server
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
           ssh -l test ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << EOF2
-          docker-compose down |${{ secrets.DOCKER_HUB_USERNAME }}/habits:${{ github.sha }}| { echo "docker-compose down failed"; exit 1; }
+          docker-compose down || { echo "docker-compose down failed"; exit 1; }
           docker-compose pull ${{ secrets.DOCKER_HUB_USERNAME }}/habits:${{ github.sha }}|| { echo "docker-compose pull failed"; exit 1; }
-          docker-compose push ${{ secrets.DOCKER_HUB_USERNAME }}/habits:${{ github.sha }}
-          docker-compose up -d --build ${{ secrets.DOCKER_HUB_USERNAME }}/habits:${{ github.sha }}|| { echo "docker-compose up failed"; exit 1; }
+          docker-compose push ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}
+          docker-compose up -d --build ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}|| { echo "docker-compose up failed"; exit 1; }
           EOF2
           EOF
-
-#      - name: Deploy to Server
-#        run: |
-#            ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << EOF
-#              ssh -l test -p22 51.250.41.177 << EOF2
-#              docker-compose down
-#              docker-compose pull
-#              docker-compose push ${{ secrets.DOCKER_HUB_USERNAME }}/habits:${{ github.sha }}
-#              docker-compose up -d --build
-##                docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/habits:${{ github.sha }}
-##                docker stop habits || true
-##                docker rm habits || true
-##                docker run -d --name habits -p 80:8000 ${{ secrets.DOCKER_HUB_USERNAME }}/habits:${{ github.sha }}
-#              EOF2
-#            EOF
 
       - name: Check running containers
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} "docker ps"
-#      - name: Add server to known_hosts
-#        run: |
-#            ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
-#
-#      - name: Generate .env file
-#        run: |
-#          echo "SSH_KEY: ${{ secrets.SSH_KEY }}" > .env
-#          echo "DEBUG=False" >> .env
-#          echo "SSH_USER: ${{ secrets.SSH_USER }}" >> .env
-#          echo "SERVER_IP: ${{ secrets.SERVER_IP }}" >> .env
-#          echo "SECRET_KEY: django-insecure-#b7%9!4l5$49-^05xk8bjtuvew1&yphe7wl&9dwl8_gwdfe70+" >> .env
-#          echo "DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}" >> .env
-#          echo "DOCKER_HUB_ACCESS_TOKEN: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}" >> .env
-#          cat .env
-#
-#      - name: Copy project files to server
-#        run: |
-#          rsync -avz --exclude '__pycache__' --exclude 'venv' --exclude '.git' . \
-#            ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}:habits
-#
-#      - name: Upload .env to server
-#        run: |
-#          rsync -avz .env ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}:habits/.env
-#
-#      - name: Install Docker and Docker Compose on server (if not installed)
-#        run: |
-#          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
-#            set -e
-#            if ! command -v docker &> /dev/null; then
-#              echo "Docker not found. Installing..."
-#              curl -fsSL https://get.docker.com | sudo sh
-#              sudo usermod -aG docker $USER
-#              newgrp docker
-#            else
-#              echo "Docker already installed."
-#            fi
-#
-#            if ! command -v docker-compose &> /dev/null; then
-#              echo "Installing Docker Compose..."
-#              sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-#              sudo chmod +x /usr/local/bin/docker-compose
-#            else
-#              echo "Docker Compose already installed."
-#            fi
-#          EOF
-
-#      - name: Wait for backend container to be ready
-#        run: |
-#          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
-#            set -e
-#            until curl -S http:// ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}; do
-#              echo "Waiting for backend to be ready..."
-#              sleep 5
-#            done
-#            echo "Backend is ready."
-#          EOF
-
-#      - name: Restart docker-compose on server
-#        run: |
-#          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
-#            set -e
-#            cd habits
-#            echo "Stopping containers..."
-#            docker-compose down || { echo "docker-compose down failed"; exit 1; }
-#
-#            echo "Pulling latest images..."
-#            docker-compose pull || { echo "docker-compose pull failed"; exit 1; }
-#
-#            echo "Rebuilding and restarting containers..."
-#            docker-compose up -d --build || { echo "docker-compose up failed"; exit 1; }
-#
-#            echo "Docker Compose successfully restarted."
-#          EOF
-
-#      - name: Run database migrations
-#        run: |
-#          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
-#            set -e
-#            cd habits
-#            echo "Running database migrations..."
-#            docker-compose exec backend python manage.py migrate || { echo "Migrations failed"; exit 1; }
-#          EOF
-
-#      - name: Show Postgres logs if failed
-#        if: failure()
-#        run: |
-#          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} "docker logs postgres_data || true"
-
-#      - name: Check running containers
-#        run: |
-#          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} "docker ps"
-
-
-#      - name: Deploy to Server
-#        run: |
-#          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
-##          docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/materials:${{ github.sha }}
-#          cd ${{ secrets.DEPLOY_DIR }}
-##          docker stop materials || true
-#          git pull
-#          docker-compose pull
-##          docker rm materials || true
-#          docker-compose down
-##          docker run -d --name materials -p 80:8000 ${{ secrets.DOCKER_HUB_USERNAME }}/materials:${{ github.sha }}
-#          docker-compose up -d --build
-#          EOF
-#
-##      - name: Deploy to Server
-##        run: |
-##          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
-##          cd ${{ secrets.DEPLOY_DIR }}
-##          git pull
-##          sudo docker-compose pull
-##          sudo docker-compose down
-##          sudo docker-compose up -d --build
-###
-##          EOF
