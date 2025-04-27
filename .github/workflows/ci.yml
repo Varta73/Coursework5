@@ -119,7 +119,7 @@ jobs:
       - name: Deploy to Server
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
-#          ssh -l test -p22 51.250.41.177 << EOF2
+          ssh -l test -p22 51.250.41.177 << EOF2
           docker-compose down || { echo "docker-compose down failed"; exit 1; }
           docker-compose pull || { echo "docker-compose pull failed"; exit 1; }
           docker-compose push ${{ secrets.DOCKER_HUB_USERNAME }}/habits:${{ github.sha }}
