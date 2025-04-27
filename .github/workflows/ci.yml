@@ -123,6 +123,16 @@ jobs:
               git pull || exit 1
             fi
       
+              # Проверяем наличие docker-compose.yaml
+            if [ ! -f docker-compose.yaml ]; then
+              echo "Ошибка: docker-compose.yaml не найден!"
+              exit 1
+            fi
+      
+              # Чистим старый .env
+            rm -f .env
+      
+             # Создаем новый .env из секретов GitHub
             echo "SSH_KEY='${{ secrets.SSH_KEY }}'" > .env
             echo "DEBUG=False" >> .env
             echo "SSH_USER=${{ secrets.SSH_USER }}" >> .env
@@ -140,6 +150,8 @@ jobs:
       
             echo "Поднимаю новые контейнеры..."
             docker-compose -f ./docker-compose.yaml up -d --build
+          
+            echo "Деплой завершен успешно!"
           EOF
 
       - name: Check running containers
