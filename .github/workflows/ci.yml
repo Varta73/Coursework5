@@ -161,7 +161,7 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
             set -e
-            until curl -s http://${{ secrets.SERVER_IP }}:8000; do
+            until curl -S http://${{ secrets.SERVER_IP }}:80; do
               echo "Waiting for backend to be ready..."
               sleep 5
             done
