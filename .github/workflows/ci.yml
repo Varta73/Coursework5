@@ -70,17 +70,17 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v3
 
-#      - name: Create .env file
-#        run: |
-#          cat <<EOF > .env
-#          DEBUG=False
-#          SSH_USER=${{ secrets.SSH_USER }}
-#          SERVER_IP=${{ secrets.SERVER_IP }}
-#          SECRET_KEY=${{ secrets.SECRET_KEY }}
-#          DOCKER_HUB_USERNAME=${{ secrets.DOCKER_HUB_USERNAME }}
-#          DOCKER_HUB_ACCESS_TOKEN=${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
-#          DEPLOY_DIR=${{ secrets.DEPLOY_DIR }}
-#          EOF
+      - name: Create .env file
+        run: |
+          cat <<EOF > .env
+          DEBUG=False
+          SSH_USER=${{ secrets.SSH_USER }}
+          SERVER_IP=${{ secrets.SERVER_IP }}
+          SECRET_KEY=${{ secrets.SECRET_KEY }}
+          DOCKER_HUB_USERNAME=${{ secrets.DOCKER_HUB_USERNAME }}
+          DOCKER_HUB_ACCESS_TOKEN=${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          DEPLOY_DIR=${{ secrets.DEPLOY_DIR }}
+          EOF
 
       - name: Set up Docker Compose
         run: |
@@ -133,13 +133,13 @@ jobs:
             echo "DEPLOY_DIR=${{ secrets.DEPLOY_DIR }}" >> .env
       
             echo "Скачиваю обновления образов..."
-            docker-compose -f ./docker-compose.yml pull
+            docker-compose -f ./docker-compose.yaml pull
       
             echo "Останавливаю старые контейнеры..."
-            docker-compose -f ./docker/docker-compose.yml down
+            docker-compose -f ./docker/docker-compose.yaml down
       
             echo "Поднимаю новые контейнеры..."
-            docker-compose -f ./docker/docker-compose.yml up -d --build
+            docker-compose -f ./docker/docker-compose.yaml up -d --build
           EOF
 
       - name: Check running containers
