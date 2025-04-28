@@ -153,9 +153,10 @@ jobs:
             echo "Скачиваю обновления образов..."
             docker-compose -f ./docker-compose.yaml pull
       
-            echo "Останавливаю старые контейнеры..."
-            docker-compose -f ./docker-compose.yaml down
-      
+            echo "Останавливаю старые контейнеры и удаляю образы..."
+            docker-compose -f ./docker-compose.yaml down --rmi all --volumes --remove-orphans
+          
+             
             echo "Поднимаю новые контейнеры..."
             docker-compose -f ./docker-compose.yaml up -d --build
           
