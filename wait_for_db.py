@@ -10,6 +10,7 @@ DB_PASS = os.getenv('DATABASE_PASSWORD')
 DB_PORT = os.getenv('DATABASE_PORT', 5432)
 TIMEOUT = 30  # Максимальное время ожидания (в секундах)
 
+
 def wait_for_db():
     while True:
         try:
@@ -26,6 +27,7 @@ def wait_for_db():
         except OperationalError:
             print("Database unavailable, waiting 1 second...")
             time.sleep(1)
+
 
 if __name__ == "__main__":
     wait_for_db()
