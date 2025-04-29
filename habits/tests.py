@@ -61,7 +61,7 @@ class HabitTestCase(APITestCase):
             is_enjoyable=False,
             related_habit=None,
             periodicity=1,
-            reward="съесть зефирку",
+            reward="съесть конфетку",
             duration=60,
             is_public=False,
         )
@@ -539,7 +539,7 @@ class PublicHabitTestCase(APITestCase):
             is_enjoyable=False,
             related_habit=None,
             periodicity=1,
-            reward="съесть зефирку",
+            reward="съесть конфетку",
             duration=60,
             is_public=True,
         )
