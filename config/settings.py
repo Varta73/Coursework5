@@ -9,9 +9,9 @@ load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.getenv('SECRET_KEY', '').strip('"')
+SECRET_KEY = os.getenv("SECRET_KEY")
 
-DEBUG = os.getenv("DEBUG", False) == "True"
+DEBUG = "True"
 
 ALLOWED_HOSTS = ["*"]
 
@@ -130,7 +130,6 @@ SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
     "UPDATE_LAST_LOGIN": True,
-    "SIGNING_KEY": os.getenv("SECRET_KEY"),
 }
 
 CORS_ALLOWED_ORIGINS = [
