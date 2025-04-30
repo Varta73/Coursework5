@@ -8,6 +8,23 @@ __htmlcov__/
 # C extensions
 *.so
 
+# Git
+.git
+.gitignore
+.gitattributes
+
+
+# CI
+.codeclimate.yml
+.travis.yml
+.taskcluster.yml
+
+# Docker
+docker-compose.yml
+Dockerfile
+.docker
+.dockerignore
+
 # Distribution / packaging
 .Python
 build/

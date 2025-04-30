@@ -1,0 +1,87 @@
+services:
+
+  habits:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: >
+      sh -c "
+      python wait_for_db.py &&
+      python manage.py migrate &&
+      python manage.py collectstatic --noinput &&
+      gunicorn config.wsgi:application --bind 0.0.0.0:8000 --log-file -
+      "
+
+    volumes:
+      - .:/habits
+      - static_volume:/habits/staticfiles
+    expose:
+      - "8000"
+    depends_on:
+      - db
+      - redis
+    env_file:
+      - ./.env
+
+  nginx:
+    build:
+      context: ./nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - static_volume:/habits/staticfiles
+    depends_on:
+      - habits
+
+  db:
+    image: postgres:17-alpine
+    restart: always
+    ports:
+      - "5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+
+    env_file:
+      - ./.env
+
+  redis:
+    image: redis:7
+    restart: always
+    volumes:
+      - redis_volume:/data
+
+  celery:
+    build: .
+    tty: true
+    command: celery -A config worker --loglevel=info
+    volumes:
+      - .:/habits
+    depends_on:
+      - redis
+      - db
+    env_file:
+      - ./.env
+
+  celery-beat:
+    build: .
+    tty: true
+    command: >
+      sh -c "
+      python wait_for_db.py &&
+      celery -A config beat --loglevel=info"
+    volumes:
+      - .:/habits
+    depends_on:
+      - redis
+      - db
+    env_file:
+      - ./.env
+
+networks:
+  default:
+
+volumes:
+  postgres_data:
+  static_volume:
+  redis_volume:
