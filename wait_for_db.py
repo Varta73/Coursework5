@@ -7,7 +7,7 @@ DB_HOST = os.getenv('DATABASE_HOST', 'db')
 DB_NAME = os.getenv('DATABASE_NAME')
 DB_USER = os.getenv('DATABASE_USER')
 DB_PASS = os.getenv('DATABASE_PASSWORD')
-DB_PORT = os.getenv('DATABASE_PORT', 5432)
+DB_PORT = int(os.getenv('DATABASE_PORT', 5432))
 TIMEOUT = 30  # Максимальное время ожидания (в секундах)
 
 

@@ -37,10 +37,11 @@ services:
   db:
     image: postgres:17-alpine
     restart: always
+    ports:
+      - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data/
-    expose:
-      - "5432"
+
     env_file:
       - ./.env
 
@@ -65,7 +66,10 @@ services:
   celery-beat:
     build: .
     tty: true
-    command: celery -A config beat --loglevel=info
+    command: >
+      sh -c "
+      python wait_for_db.py &&
+      celery -A config beat --loglevel=info"
     volumes:
       - .:/habits
     depends_on:
